@@ -14,8 +14,8 @@ services:
     environment:
       MYSQL_DATABASE: fileio
       MYSQL_USER: admin
-      MYSQL_PASSWORD: test
-      MYSQL_ROOT_PASSWORD: test
+      MYSQL_PASSWORD: letmein
+      MYSQL_ROOT_PASSWORD: letmein
       SERVICE_TAGS: dev
       SERVICE_NAME: mysqldb
     networks:
