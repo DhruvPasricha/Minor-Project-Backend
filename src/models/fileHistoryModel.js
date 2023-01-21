@@ -3,7 +3,7 @@ const FILE_HISTORY = {
         insert into
         file_history 
         (file_id, action, action_done_by)
-        values (?, 'CREATED', ?)
+        values ((select max(id) from files where created_by = ?), 'CREATED', ?)
     `,
     DISPATCH_FILE: `
         insert into
@@ -12,8 +12,8 @@ const FILE_HISTORY = {
     `,
     RECEIVE_FILE: `
         insert into
-        file_history (file_id, action, action_done_by)
-        values (?, 'RECEIVED', ?)
+        file_history (file_id, action, action_done_by, action_done_for)
+        values (?, 'RECEIVED', ?, ?)
     `,
     CLOSE_FILE: `
         insert into
