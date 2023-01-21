@@ -1,0 +1,31 @@
+{
+    "name": "minor-project-backend",
+    "version": "1.0.0",
+    "description": "Minor Project Backend",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "start:dev": "NODE_ENV=dev nodemon src/index.js",
+        "start:prod": "NODE_ENV=prod node src/index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/DhruvPasricha/Minor-Project-Backend.git"
+    },
+    "author": "Dhruv Pasricha",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/DhruvPasricha/Minor-Project-Backend/issues"
+    },
+    "homepage": "https://github.com/DhruvPasricha/Minor-Project-Backend#readme",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "dotenv": "^16.0.3",
+        "express": "^4.18.2",
+        "ip": "^1.1.8",
+        "mysql": "^2.18.1"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.20"
+    }
+}
