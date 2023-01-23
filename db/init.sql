@@ -25,6 +25,7 @@ create table files (
     subject             varchar(1000),
     created_by          bigint unsigned not null,
     created_at          timestamp default CURRENT_TIMESTAMP,
+    status              enum('CREATED', 'DISPATCHED', 'RECEIVED', 'CLOSED') default 'CREATED',
     primary key (id),
     foreign key (created_by) references users(id)
 );

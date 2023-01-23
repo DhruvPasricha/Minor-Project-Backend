@@ -3,10 +3,11 @@ const FILE = {
     CREATE_FILE: `insert into files (subject, created_by) values (?, ?);`,
     GET_FILE: `
         select
-            id,
-            subject,
+            id as fileId,
+            subject as subjectId,
             created_by as createdBy,
-            created_at as createdAt
+            created_at as createdAt,
+            status
         from
             files
         where
@@ -14,10 +15,10 @@ const FILE = {
     `,
     GET_FILES_CREATED_BY_USER: `
         select
-            id,
-            subject,
-            created_by as createdBy,
-            created_at as createdAt
+            id as fileId,
+            subject as fileSubject,
+            created_at as createdAt,
+            status
         from 
             files
         where
@@ -27,18 +28,15 @@ const FILE = {
     `,
     GET_FILES_SENT_BY_USER: `
         select
-            files.id as id,
-            files.subject as subject,
+            files.id as fileId,
+            files.subject as fileSubject,
             files.created_at as createdAt,
             files.created_by as createdBy,
-            users.name as receiver,
-            file_history.action_done_at as sentAt
+            files.status as status
         from
             file_history
         inner join
             files on files.id = file_history.file_id
-        inner join
-            users on file_history.action_done_for = users.id
         where
             file_history.action = 'DISPATCHED' and
             action_done_by = ?
@@ -47,12 +45,13 @@ const FILE = {
     `,
     GET_FILES_CURRENTLY_WITH_USER: `
         select
-            files.id as id,
-            subject,
+            files.id as fileId,
+            subject as fileSubject,
             files.created_at as createdAt,
             files.created_by as createdBy,
-            action_done_by as currentlyWith,
-            action_done_at as WithUserSince
+            action_done_for as assignedBy,
+            action_done_at as assignedAt,
+            status
         from (
                 select *,
                     dense_rank() over (partition by file_id
@@ -73,12 +72,13 @@ const FILE = {
     `,
     GET_INCOMING_FILES_FOR_USER: `
         select
-            files.id as id,
-            subject,
+            files.id as fileId,
+            subject as fileSubject,
             files.created_at as createdAt,
             files.created_by as createdBy,
-            users.name as sentBy,
-            action_done_at as sentAt
+            file_history_partitioned.action_done_by as assignedBy,
+            file_history_partitioned.action_done_at as assignedAt,
+            files.status as status
         from (
                 select *,
                     dense_rank() over (partition by file_id
@@ -90,8 +90,6 @@ const FILE = {
             as file_history_partitioned
         inner join
                 files on files.id = file_history_partitioned.file_id
-        inner join
-                users on file_history_partitioned.action_done_by = users.id
         where
             action_done_for = ? and
             group_position = 1 and
@@ -99,6 +97,7 @@ const FILE = {
         order by
             action_done_at desc
     `,
+    UPDATE_FILE_STATUS: 'update files set status = ? where id = ?',
 };
 
 export default FILE;

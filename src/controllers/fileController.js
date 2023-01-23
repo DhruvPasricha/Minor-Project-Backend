@@ -30,7 +30,8 @@ export const createFile = (request, response) => {
 
 export const getFile = (request, response) => {
     console.log(request.method + ' ' + request.originalUrl + ' Getting File');
-    database.query(QUERY.GET_FILE, [request.params.id], (error, results) => {
+    const { id: fileId } = request.params;
+    database.query(QUERY.GET_FILE, [fileId], (error, results) => {
         console.log(error, results);
         let code, status, message, data;
         if (results && results[0]) {
@@ -89,5 +90,23 @@ export const getUserFiles = (request, response) => {
             }
         }
         response.status(code).send(new Response(code, status, message, data));
+    });
+};
+
+export const updateFileStatus = (request, response, fileId, action) => {
+    console.log(request.method + ' ' + request.originalUrl + ' Updating File Status');
+    database.query(QUERY.UPDATE_FILE_STATUS, [action, fileId], (error, results) => { 
+        console.log(error, results);
+        let code, status, message;
+        if (results) {
+            code = HTTP_STATUS_CODES.OK.code;
+            status = HTTP_STATUS_CODES.OK.status;
+            message = 'Success';
+        } else {
+            code = HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR.code;
+            status = HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR.status;
+            message = 'Internal Server Error';
+        }
+        response.status(code).send(new Response(code, status, message));
     });
 };

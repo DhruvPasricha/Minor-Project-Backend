@@ -5,7 +5,8 @@ import HTTP_STATUS_CODES from '../domain/statusCodes.js';
 
 export const createUser = (request, response) => {
     console.log(request.method + ' ' + request.originalUrl + ' Creating User');
-    database.query(QUERY.CREATE_USER, Object.values(request.body), (error, results) => {
+    const { name, email, password, deptId } = request.body;
+    database.query(QUERY.CREATE_USER, [name, email, password, deptId], (error, results) => {
         console.log(error, results);
         let code, status, message, data;
         if (results) {
@@ -23,7 +24,8 @@ export const createUser = (request, response) => {
 
 export const getUser = (request, response) => {
     console.log(request.method + ' ' + request.originalUrl + ' Getting User');
-    database.query(QUERY.GET_USER_INFO_FROM_USER_ID, [request.params.id], (error, results) => {
+    const { id: userId } = request.params;
+    database.query(QUERY.GET_USER_INFO_FROM_USER_ID, [userId], (error, results) => {
         console.log(error, results);
         let code, status, message, data;
         if (results && results[0]) {
